@@ -13,3 +13,9 @@ libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.0.7"
 libraryDependencies += "com.typesafe" % "config" % "1.0.0"
 
 assemblySettings
+
+// Since we have no Scala sources, omit the Scala library and version details
+
+autoScalaLibrary := false
+
+crossPaths := false
