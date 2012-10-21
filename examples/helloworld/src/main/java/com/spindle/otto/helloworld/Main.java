@@ -17,7 +17,9 @@ public final class Main {
         logger.info("Logging at info level; edit logback.xml to change the log level");
 
         Config config = ConfigFactory.load();
-        logger.info("From configuration: " + config.getString("helloworld.text"));
+        logger.info("Configuration value1: " + config.getString("helloworld.value1"));
+        logger.info("Configuration value2: " + config.getString("helloworld.value2"));
+        logger.info("Configuration value3: " + config.getString("helloworld.value3"));
 
         logger.info("Sleeping for 30 seconds and then exiting to simulate an application crash");
         TimeUnit.SECONDS.sleep(30);
