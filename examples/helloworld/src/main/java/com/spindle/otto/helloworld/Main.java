@@ -13,6 +13,13 @@ public final class Main {
     private final static Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
+        logger.info("Started");
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                logger.info("Shutting down");
+            }
+        });
+
         logger.trace("Logging at trace level; edit logback.xml to change the log level");
         logger.debug("Logging at debug level; edit logback.xml to change the log level");
         logger.info("Logging at info level; edit logback.xml to change the log level");
@@ -35,6 +42,5 @@ public final class Main {
         } catch (InterruptedException e) {
             // ignore
         }
-        logger.info("Exiting to simulate an application crash");
     }
 }
