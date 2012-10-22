@@ -43,7 +43,7 @@ Try a few experiments to understand Otto:
 * Examine `/opt/otto/service/helloworld/run` and `/opt/otto/run/helloworld` to understand how Otto invokes `helloworld`. Note that the logging configuration in `/opt/otto/conf/helloworld/logback.xml` uses an environment variable supplied by Otto to locate the application data directory without hard-coding path names.
 * Note the permissions for `/opt/otto/build/helloworld/helloworld-master-checkin@1`, `/opt/otto/conf/helloworld`, and `/opt/otto/data/helloworld`: an application may modify its data directory but neither its build artifact nor its configuration
 
-Next, try changing the application configuration. After making each change, rerun `puppet apply`; Otto will restart the application with its new configuration.
+Next, try changing the application configuration. After making each change, rerun the `puppet apply` command above; Otto will restart the application with its new configuration.
 
 * Deploy a different build (`1`, `2` or `3`) by changing `jenkinsBuildID` in `examples/helloworld/manifests/site.pp`. Otto will download the new build, stop the existing build, and then start the new build. Try rolling back to a previous build; Otto will avoid redownloading a build it has already retrieved.
 * Change the log level in `examples/helloworld/modules/helloworld/files/conf/logback.xml` or a configuration value in `examples/helloworld/modules/files/conf/application.conf`
