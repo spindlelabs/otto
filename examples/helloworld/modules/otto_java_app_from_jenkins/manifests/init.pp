@@ -1,9 +1,7 @@
-define otto_java_app_from_jenkins($appName = $title, $jenkinsProjectName, $jenkinsBuildID, $appConfSource, $appRunContent) {
+define otto_java_app_from_jenkins($appName = $title, $jenkinsProjectName, $jenkinsBuildID, $appUserGroupName, $appConfSource, $appRunContent) {
   include java
 
   $appBuildID = "${jenkinsProjectName}@${jenkinsBuildID}"
-  # You can (and should) create an unprivileged user to run your application
-  $appUserGroupName = "nobody"
   $appBuildArtifactName = "${appName}-assembly-1.0.jar"
   $appBuildArtifactTempName = "${appBuildArtifactName}.tmp"
   $appBuildArtifactUrl = "https://spindle-app-dev-otto-examples.s3-us-west-2.amazonaws.com/job/${jenkinsProjectName}/${jenkinsBuildID}/artifact/${appName}/target/${appBuildArtifactName}"
@@ -24,6 +22,6 @@ define otto_java_app_from_jenkins($appName = $title, $jenkinsProjectName, $jenki
     appBuildArtifactName => $appBuildArtifactName,
     appConfSource => $appConfSource,
     appRunContent => $appRunContent,
-    require => Class["java"]
+    require => [Class["java"], User[$appUserGroupName]]
   }
 }
