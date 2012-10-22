@@ -8,12 +8,12 @@ Otto is tested with Ubuntu 12.04 LTS with Puppet 2.7.19.
 Getting started: deploying `helloworld`
 ---------------------------------------
 
-`helloworld` is a simple application deployable with Otto. `helloworld` is a Java application that reads configuration, logs several messages, and then exits after 30 seconds (simulating an application crash.)
+`helloworld` is a simple Java application that reads its configuration, logs several messages, and then exits after 30 seconds (simulating an application crash.) We'll demonstrate deploying `helloworld` from a build server using Otto.
 
 To deploy the application, Otto will:
 
 1. Create an unprivileged user, `helloworld` (`examples/helloworld/modules/helloworld/manifests/init.pp`)
-2. Install the Java 7 runtime, `openjdk-7-jre` (`examples/helloworld/modules/java/manifests/init.pp`)
+2. Install the Java 7 runtime package, `openjdk-7-jre` (`examples/helloworld/modules/java/manifests/init.pp`)
 2. Create the `/opt/otto` hierarchy (`modules/otto/manifests/init.pp`)
 3. Install [daemontools](http://cr.yp.to/daemontools.html), a collection of tools for managing services
 4. Ensure that the daemontools [service scanner](http://cr.yp.to/daemontools/svscan.html) is running
@@ -47,7 +47,7 @@ Next, try changing the application configuration. After making a change, rerun `
 Next steps
 ----------
 
-Now that you've seen a working example, try deploying your own application with Otto. Be sure to follow the application notes in `modules/otto/manifests/{app,init}.pp`.
+Now that you've seen a working example, try deploying your own application with Otto. Copy `modules/otto` into your Puppet modules directory, and modify the examples to fit your environment. Be sure to follow the application notes in `modules/otto/manifests/{app,init}.pp`.
 
 Known issues
 ------------
