@@ -3,7 +3,7 @@ Otto
 
 Text goes here...link to blog post with introduction. It's easiest to understand Otto by trying it out...
 
-Otto is tested with Ubuntu 12.04 LTS with Puppet 2.7.19.
+Otto is tested with Puppet 2.7.19 on Ubuntu 12.04 LTS.
 
 Getting started: deploying `helloworld`
 ---------------------------------------
@@ -22,7 +22,7 @@ To deploy the application, Otto will:
 7. Run the application (`examples/helloworld/templates/run.erb`)
 8. Ensure that the service is [started at boot and automatically restarted if it fails](http://cr.yp.to/daemontools/faq/create.html#why)
 
-To deploy `helloworld`, run:
+To deploy `helloworld` on Ubuntu 12.04 LTS, run:
 
     sudo apt-get install puppet
     git clone https://github.com/spindlelabs/otto.git
