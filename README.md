@@ -50,7 +50,7 @@ Next, try changing the application configuration. After making each change below
 * Change the configuration value `value2` in `examples/helloworld/manifests/site.pp`
 * Change the configuration value `value3` in `examples/helloworld/modules/templates/run.erb` by changing the amount of swap space on the machine (`dd if=/dev/zero of=/swapfile bs=1024 count=65536; mkswap /swapfile; swapon /swapfile`). The amount of swap space on the machine is provided by [Facter](http://puppetlabs.com/blog/facter-part-1-facter-101/).
 * As `root`, modify `/opt/otto/conf/helloworld/logback.xml`. Otto will revert the change to prevent configuration drift.
-* Attempt to deploy a build that does not exist by setting `jenkinsBuildID` to `bogus`. Otto will abort the upgrade, log an error, and continue running the previous build.
+* Simulate a build server failure by changing `appBuildArtifactUrl` in `examples/helloworld/modules/otto_java_app_from_jenkins/init.pp`. Otto will abort the upgrade, log an error, and continue running the previous build.
 
 Next steps
 ----------
