@@ -54,7 +54,7 @@ Next, try changing the application configuration. After making each change, reru
 Next steps
 ----------
 
-Now that you've seen a working example, try deploying your own application with Otto. Copy `modules/otto` into your Puppet modules directory, and modify the examples to fit your environment. Be sure to follow the application notes in `modules/otto/manifests/{app,init}.pp`.
+Now that you've seen a working example, try deploying your own application with Otto. If you're not familiar with Puppet, read the [Puppet introduction](http://docs.puppetlabs.com/guides/introduction.html). Copy `modules/otto` into your Puppet modules directory, and modify the examples to fit your environment. Be sure to follow the application notes in `modules/otto/manifests/{app,init}.pp`.
 
 Known issues
 ------------
