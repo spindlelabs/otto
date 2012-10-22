@@ -60,8 +60,3 @@ Known issues
 ------------
 
 Otto does not provide a mechanism for removing deployed applications, but it's [easy to do manually](http://cr.yp.to/daemontools/faq/create.html#remove).
-
-License
--------
-
-TODO
