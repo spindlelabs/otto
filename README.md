@@ -59,4 +59,4 @@ Now that you've seen a working example, try deploying your own application with 
 Known issues
 ------------
 
-Otto does not provide a mechanism for removing deployed applications, but it's [easy to do manually](http://cr.yp.to/daemontools/faq/create.html#remove).
+Otto does not provide a mechanism for removing deployed applications, but it's easy to do manually: remove the application definition from the node manifest, [stop the application and its `supervise` process](http://cr.yp.to/daemontools/faq/create.html#remove), and then remove its state from `/opt/otto`.
