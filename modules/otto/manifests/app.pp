@@ -121,12 +121,12 @@ define otto::app($appName = $title, $appBuildID, $appUserGroupName, $appBuildArt
 
   # Changing the target of a symlink is not an atomic operation; see
   # http://blog.moertel.com/articles/2005/08/22/how-to-change-symlinks-atomically
-  $installServiceCommand = sprintf("ln -sTf %s %s && mv -Tf %s %s",
+  $installServiceCommand = sprintf("/bin/ln -sTf %s %s && mv -Tf %s %s",
                                shellquote($appServicePath),
                                shellquote($appInstalledServiceTempPath),
                                shellquote($appInstalledServiceTempPath),
                                shellquote($appInstalledServicePath))
-  $serviceNotInstalledCommand = sprintf("test ! \\( -h %s -a \"`readlink -n %s`\" = %s \\)",
+  $serviceNotInstalledCommand = sprintf("/usr/bin/test ! \\( -h %s -a \"`readlink -n %s`\" = %s \\)",
                                         shellquote($appInstalledServicePath),
                                         shellquote($appInstalledServicePath),
                                         shellquote($appServicePath))
