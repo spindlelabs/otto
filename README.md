@@ -10,16 +10,16 @@ Getting started: deploying `helloworld`
 
 `helloworld` is a simple Java application that reads its configuration, logs several messages, and then exits after 30 seconds (simulating an application crash.) We'll demonstrate deploying `helloworld` from a build server using Otto.
 
-To deploy the application, Otto will:
+To deploy `helloworld`, Otto will:
 
 1. Create an unprivileged user, `helloworld` (`examples/helloworld/modules/helloworld/manifests/init.pp`)
 2. Install the Java 7 runtime package, `openjdk-7-jre` (`examples/helloworld/modules/java/manifests/init.pp`)
 2. Create the `/opt/otto` hierarchy (`modules/otto/manifests/init.pp`)
 3. Install [daemontools](http://cr.yp.to/daemontools.html), a collection of tools for managing services
 4. Ensure that the daemontools [service scanner](http://cr.yp.to/daemontools/svscan.html) is running
-5. Download the `helloworld` build artifact from the (simulated, Jenkins-like) build server (`examples/helloworld/modules/otto_java_app_from_jenkins/manifests/init.pp`)
-6. Deploy the `helloworld` configuration files (`examples/helloworld/files/conf`)
-7. Run the application (`examples/helloworld/templates/run.erb`)
+5. Download the `helloworld` build artifact from the (simulated, Jenkins-like) build server into `/opt/otto/build/helloworld/helloworld-master-checkin@1` (`examples/helloworld/modules/otto_java_app_from_jenkins/manifests/init.pp`)
+6. Deploy the `helloworld` configuration files into `/opt/otto/conf/helloworld` (`examples/helloworld/files/conf`)
+7. Run the application using `/opt/otto/run/helloworld` (`examples/helloworld/templates/run.erb`)
 8. Ensure that the service is [started at boot and automatically restarted if it fails](http://cr.yp.to/daemontools/faq/create.html#why)
 
 To deploy `helloworld` on Ubuntu 12.04 LTS, run:
@@ -27,7 +27,7 @@ To deploy `helloworld` on Ubuntu 12.04 LTS, run:
     sudo apt-get install puppet
     git clone https://github.com/spindlelabs/otto.git
     cd otto
-    
+
     # This command will make (reversible) changes to your system state; consider using a virtual machine
     sudo puppet apply --modulepath modules:examples/helloworld/modules --debug examples/helloworld/manifests/site.pp
 
