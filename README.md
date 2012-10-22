@@ -37,7 +37,7 @@ Try a few experiments to understand Otto:
 
 * Run `svstat /etc/service/helloworld` to show the application's PID and uptime
 * Run `pstree -paul` to show the process hierarchy; observe that `java` is running as the unprivileged `helloworld` user
-* Run `svc -t /etc/service/helloworld` to send SIGTERM to the application; it will automatically restart
+* Run `svc -t /etc/service/helloworld` to send `SIGTERM` to the application; it will automatically restart
 * Restart the machine; `helloworld` will automatically start
 * View the application logs in `/opt/otto/data/helloworld/log`. Observe the logged configuration values and environment variables.
 * Examine `/opt/otto/service/helloworld/run` and `/opt/otto/run/helloworld` to understand how Otto invokes `helloworld`. Note that the logging configuration in `/opt/otto/conf/helloworld/logback.xml` uses an environment variable supplied by Otto to locate the application data directory without hard-coding path names.
