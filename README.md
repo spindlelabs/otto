@@ -22,19 +22,23 @@ To deploy the application, Otto will:
 7. Run the application (`examples/helloworld/templates/run.erb`)
 8. Ensure that the service is [started at boot and automatically restarted if it fails](http://cr.yp.to/daemontools/faq/create.html#why)
 
-Running the example will make (reversible) changes to your system state, so consider using a virtual machine. To deploy `helloworld`, run:
+To deploy `helloworld`, run:
 
+    sudo apt-get install puppet
+    git clone https://github.com/spindlelabs/otto.git
+    cd otto
+    # This command will make (reversible) changes to your system state; consider using a virtual machine
     sudo puppet apply --modulepath modules:examples/helloworld/modules --debug examples/helloworld/manifests/site.pp
 
 `helloworld` will be installed into `/opt/otto` and started automatically.
 
 Try a few experiments to understand Otto:
 
-* Run `svstat /etc/service/helloworld` to show the application's PID
+* Run `svstat /etc/service/helloworld` to show the application's PID and uptime
+* Run `pstree -paul` to show the process hierarchy; observe that `java` is running as the unprivileged `helloworld` user
 * Run `svc -t /etc/service/helloworld` to send SIGTERM to the application; it will automatically restart
-* Restart the machine; `hellloworld` will automatically start
+* Restart the machine; `helloworld` will automatically start
 * View the application logs in `/opt/otto/data/helloworld/log`. Observe the logged configuration values.
-* Run `pstree -paul` to show the process hierarchy. Observe that `java` is running as the unprivileged `helloworld` user, and that that the application is automatically restarted after "crashing".
 * Examine `/opt/otto/service/helloworld/run` and `/opt/otto/run/helloworld` to understand how Otto invokes `helloworld`. Note that the logging configuration in `/opt/otto/conf/helloworld/logback.xml` uses an environment variable supplied by Otto to locate the application data directory without hard-coding path names.
 
 Next, try changing the application configuration. After making a change, rerun `puppet apply`; Otto will restart the application with its new configuration.
