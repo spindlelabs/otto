@@ -41,15 +41,16 @@ Try a few experiments to understand Otto:
 * Restart the machine; `helloworld` will automatically start
 * View the application logs in `/opt/otto/data/helloworld/log`. Observe the logged configuration values and environment variables.
 * Examine `/opt/otto/service/helloworld/run` and `/opt/otto/run/helloworld` to understand how Otto invokes `helloworld`. Note that the logging configuration in `/opt/otto/conf/helloworld/logback.xml` uses an environment variable supplied by Otto to locate the application data directory without hard-coding path names.
-* Note the permissions for `/opt/otto/build/helloworld/helloworld-master-checkin@1`, `/opt/otto/conf/helloworld`, and `/opt/otto/data/helloworld`: an application may modify its data directory but cannot modify its build artifact or its configuration
+* Note the permissions for `/opt/otto/build/helloworld/helloworld-master-checkin@1`, `/opt/otto/conf/helloworld`, and `/opt/otto/data/helloworld`: an application can modify its data directory but cannot modify its build artifact or its configuration
 
-Next, try changing the application configuration. After making each change, rerun the `puppet apply` command above; Otto will restart the application with its new configuration.
+Next, try changing the application configuration. After making each change below, rerun the `puppet apply` command above; Otto will restart the application with its new configuration.
 
-* Deploy a different build (`1`, `2` or `3`) by changing `jenkinsBuildID` in `examples/helloworld/manifests/site.pp`. Otto will download the new build, stop the existing build, and then start the new build. Try rolling back to a previous build; Otto will avoid redownloading a build it has already retrieved.
+* Deploy a different build (`1`, `2` or `3`) by changing `jenkinsBuildID` in `examples/helloworld/manifests/site.pp`. Otto will download the new build, stop the existing build, and then start the new build. Try rolling back to a previous build; Otto will avoid redownloading a build that it has already retrieved.
 * Change the log level in `examples/helloworld/modules/helloworld/files/conf/logback.xml` or a configuration value in `examples/helloworld/modules/files/conf/application.conf`
 * Change the configuration value `value2` in `examples/helloworld/manifests/site.pp`
-* Change the configuration value `value3` in `examples/helloworld/modules/templates/run.erb` by changing the amount of swap space on the machine (`dd if=/dev/zero of=/swapfile bs=1024 count=65536; mkswap /swapfile; swapon /swapfile`)
+* Change the configuration value `value3` in `examples/helloworld/modules/templates/run.erb` by changing the amount of swap space on the machine (`dd if=/dev/zero of=/swapfile bs=1024 count=65536; mkswap /swapfile; swapon /swapfile`). The amount of swap space on the machine is provided by [Facter](http://puppetlabs.com/blog/facter-part-1-facter-101/).
 * As `root`, modify `/opt/otto/conf/helloworld/logback.xml`. Otto will revert the change to prevent configuration drift.
+* Attempt to deploy a build that does not exist by setting `jenkinsBuildID` to `bogus`. Otto will abort the upgrade, log an error, and continue running the previous build.
 
 Next steps
 ----------
