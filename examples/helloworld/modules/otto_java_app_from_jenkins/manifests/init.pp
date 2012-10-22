@@ -2,6 +2,7 @@ define otto_java_app_from_jenkins($appName = $title, $jenkinsProjectName, $jenki
   include java
 
   $appBuildID = "${jenkinsProjectName}@${jenkinsBuildID}"
+  # You can (and should) create an unprivileged user to run your application
   $appUserGroupName = "nobody"
   $appBuildArtifactName = "${appName}-assembly-1.0.jar"
   $appBuildArtifactTempName = "${appBuildArtifactName}.tmp"
