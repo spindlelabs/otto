@@ -1,14 +1,14 @@
 Otto
 ====
 
-Text goes here. It's easiest to understand Otto by trying it out...
+Text goes here...link to blog post with introduction. It's easiest to understand Otto by trying it out...
 
 Otto is tested with Ubuntu 12.04 LTS with Puppet 2.7.19.
 
-Hello world
------------
+Getting started: deploying `helloworld`
+---------------------------------------
 
-Otto includes an example application, `helloworld`. `helloworld` is a Java application that reads configuration, logs several messages, and then exits after 30 seconds (simulating an application crash.)
+`helloworld` is a simple application deployable with Otto. `helloworld` is a Java application that reads configuration, logs several messages, and then exits after 30 seconds (simulating an application crash.)
 
 To deploy the application, Otto will:
 
@@ -22,15 +22,39 @@ To deploy the application, Otto will:
 7. Run the application (`examples/helloworld/templates/run.erb`)
 8. Ensure that the service is [started at boot and automatically restarted if it fails](http://cr.yp.to/daemontools/faq/create.html#why)
 
-Running the example will make (reversible) changes to your system state, so you may wish to use a virtual machine. To run the example:
+Running the example will make (reversible) changes to your system state, so consider using a virtual machine. To deploy `helloworld`, run:
 
     sudo puppet apply --modulepath modules:examples/helloworld/modules --debug examples/helloworld/manifests/site.pp
 
-`helloworld` will be installed into `/opt/otto` and started automatically. Run `svstat /etc/service/helloworld` to show the application's PID. Run `svc -t /etc/service/helloworld` to send SIGTERM to the application; it will automatically restart. `helloworld` stores logs in `/opt/otto/data/helloworld/log`.
+`helloworld` will be installed into `/opt/otto` and started automatically.
 
-TODO: try changing the build #, try changing run.erb, try adding more swap (dd if=/dev/zero of=/swapfile bs=1024 count=65536; mkswap /swapfile; swapon /swapfile)
+Try a few experiments to understand Otto:
+
+* Run `svstat /etc/service/helloworld` to show the application's PID
+* Run `svc -t /etc/service/helloworld` to send SIGTERM to the application; it will automatically restart
+* Restart the machine; `hellloworld` will automatically start
+* View the application logs in `/opt/otto/data/helloworld/log`. Observe that the application is frequently (simulating) crashing and being automatically restarted.
+* Run `pstree -paul` to show the process hierarchy. Observe that `java` is running as the unprivileged `helloworld` user.
+* Examine `/opt/otto/service/helloworld/run` and `/opt/otto/run/helloworld` to understand how Otto invokes `helloworld`. Note that the logging configuration in `examples/helloworld/modules/helloworld/files/conf/logback.xml` uses an environment variable supplied by Otto to locate the application data directory.
+
+Next, try changing the application configuration. After making a change, rerun `puppet apply`; Otto will restart the application with its new configuration.
+
+* Deploy a different build (`1`, `2` or `3`) by changing `jenkinsBuildID` in `examples/helloworld/manifests/site.pp` and then rerunning `puppet apply`. Otto will download the new build, stop the existing build, and then start the new build. Try rolling back to a previous build; Otto will avoid redownloading a build it has already retrieved.
+* Change the log level in `examples/helloworld/modules/helloworld/files/conf/logback.xml` or a configuration value in `examples/helloworld/modules/files/conf/application.conf`
+* Change `value2` in `examples/helloworld/manifests/site.pp`
+* Change `value3` in `examples/helloworld/modules/templates/run.erb` by changing the amount of swap space on the machine (`dd if=/dev/zero of=/swapfile bs=1024 count=65536; mkswap /swapfile; swapon /swapfile`)
+
+Next steps
+----------
+
+Now that you've seen a working example, try deploying your own application with Otto. Be sure to follow the application notes in `modules/otto/manifests/{app,init}.pp`.
 
 Known issues
 ------------
 
 Otto does not provide a mechanism for removing deployed applications, but it's [easy to do manually](http://cr.yp.to/daemontools/faq/create.html#remove).
+
+License
+-------
+
+TODO
