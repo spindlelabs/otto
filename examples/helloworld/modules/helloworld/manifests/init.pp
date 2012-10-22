@@ -1,9 +1,8 @@
-class ottoexample1::app::helloworld($jenkinsProjectName, $jenkinsBuildID, $value2) {
-  $appName = "helloworld"
-
-  ottoexample1::otto_java_app_from_jenkins { $appName:
+class helloworld($jenkinsProjectName, $jenkinsBuildID, $value2) {
+  ottoexample1::otto_java_app_from_jenkins { "helloworld":
     jenkinsProjectName => $jenkinsProjectName,
     jenkinsBuildID => $jenkinsBuildID,
-    appRunContent => template("ottoexample1/app/helloworld/run.erb")
+    appRunContent => template("helloworld/run.erb"),
+    appConfSource => "puppet:///modules/helloworld/conf"
   }
 }

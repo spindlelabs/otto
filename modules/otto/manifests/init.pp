@@ -1,5 +1,5 @@
 class otto() {
-  $ottoRootPath = "/mnt/otto"
+  $ottoRootPath = "/opt/otto"
 
   $ottoBuildPath = "${ottoRootPath}/build"
   $ottoConfPath = "${ottoRootPath}/conf"

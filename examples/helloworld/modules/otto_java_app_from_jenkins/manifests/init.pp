@@ -1,8 +1,8 @@
-define ottoexample1::otto_java_app_from_jenkins($appName = $title, $jenkinsProjectName, $jenkinsBuildID, $appRunContent) {
+define otto_java_app_from_jenkins($appName = $title, $jenkinsProjectName, $jenkinsBuildID, $appConfSource, $appRunContent) {
   include java
 
   $appBuildID = "${jenkinsProjectName}@${jenkinsBuildID}"
-  $appUserGroupName = $::environmentDeployUserName
+  $appUserGroupName = "nobody"
   $appBuildArtifactName = "${appName}-assembly-1.0.jar"
   $appBuildArtifactTempName = "${appBuildArtifactName}.tmp"
   $appBuildArtifactUrl = "https://spindle-app-dev-otto-examples.s3-us-west-2.amazonaws.com/job/${jenkinsProjectName}/${jenkinsBuildID}/artifact/${appName}/target/${appBuildArtifactName}"
@@ -21,7 +21,7 @@ define ottoexample1::otto_java_app_from_jenkins($appName = $title, $jenkinsProje
                                             shellquote($appBuildArtifactTempName),
                                             shellquote($appBuildArtifactName)),
     appBuildArtifactName => $appBuildArtifactName,
-    appConfSource => "puppet:///modules/ottoexample1/app/${appName}/conf",
+    appConfSource => $appConfSource,
     appRunContent => $appRunContent,
     require => Class["java"]
   }

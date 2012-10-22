@@ -1,5 +1,5 @@
 <configuration>
-    <!-- When deployed, we log to a rolling file -->
+    <!-- When deployed, we log at the INFO level to a rolling file -->
     <appender class="ch.qos.logback.core.rolling.RollingFileAppender" name="FILE">
         <file>${OTTO_APP_DATA_PATH:-helloworld}/log/current.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -9,10 +9,10 @@
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder>
-            <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="FILE"/>
     </root>
 </configuration>
