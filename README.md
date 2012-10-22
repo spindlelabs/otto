@@ -33,16 +33,16 @@ Try a few experiments to understand Otto:
 * Run `svstat /etc/service/helloworld` to show the application's PID
 * Run `svc -t /etc/service/helloworld` to send SIGTERM to the application; it will automatically restart
 * Restart the machine; `hellloworld` will automatically start
-* View the application logs in `/opt/otto/data/helloworld/log`. Observe that the application is frequently (simulating) crashing and being automatically restarted.
-* Run `pstree -paul` to show the process hierarchy. Observe that `java` is running as the unprivileged `helloworld` user.
-* Examine `/opt/otto/service/helloworld/run` and `/opt/otto/run/helloworld` to understand how Otto invokes `helloworld`. Note that the logging configuration in `examples/helloworld/modules/helloworld/files/conf/logback.xml` uses an environment variable supplied by Otto to locate the application data directory.
+* View the application logs in `/opt/otto/data/helloworld/log`. Observe the logged configuration values.
+* Run `pstree -paul` to show the process hierarchy. Observe that `java` is running as the unprivileged `helloworld` user, and that that the application is automatically restarted after "crashing".
+* Examine `/opt/otto/service/helloworld/run` and `/opt/otto/run/helloworld` to understand how Otto invokes `helloworld`. Note that the logging configuration in `/opt/otto/conf/helloworld/logback.xml` uses an environment variable supplied by Otto to locate the application data directory without hard-coding path names.
 
 Next, try changing the application configuration. After making a change, rerun `puppet apply`; Otto will restart the application with its new configuration.
 
 * Deploy a different build (`1`, `2` or `3`) by changing `jenkinsBuildID` in `examples/helloworld/manifests/site.pp` and then rerunning `puppet apply`. Otto will download the new build, stop the existing build, and then start the new build. Try rolling back to a previous build; Otto will avoid redownloading a build it has already retrieved.
 * Change the log level in `examples/helloworld/modules/helloworld/files/conf/logback.xml` or a configuration value in `examples/helloworld/modules/files/conf/application.conf`
-* Change `value2` in `examples/helloworld/manifests/site.pp`
-* Change `value3` in `examples/helloworld/modules/templates/run.erb` by changing the amount of swap space on the machine (`dd if=/dev/zero of=/swapfile bs=1024 count=65536; mkswap /swapfile; swapon /swapfile`)
+* Change the configuration value `value2` in `examples/helloworld/manifests/site.pp`
+* Change the configuration value `value3` in `examples/helloworld/modules/templates/run.erb` by changing the amount of swap space on the machine (`dd if=/dev/zero of=/swapfile bs=1024 count=65536; mkswap /swapfile; swapon /swapfile`)
 
 Next steps
 ----------
