@@ -15,7 +15,7 @@ To deploy `helloworld`, Otto will:
 1. Create an unprivileged user, `helloworld` (`examples/helloworld/modules/helloworld/manifests/init.pp`)
 2. Install the Java 7 runtime package, `openjdk-7-jre` (`examples/helloworld/modules/java/manifests/init.pp`)
 2. Create the `/opt/otto` hierarchy (`modules/otto/manifests/init.pp`)
-3. Install [`daemontools`](http://cr.yp.to/daemontools.html), a collection of tools for managing services
+3. Install [`daemontools`](http://cr.yp.to/daemontools.html), a [public domain](http://cr.yp.to/distributors.html) collection of tools for managing services
 4. Ensure that [`svscan`](http://cr.yp.to/daemontools/svscan.html), the `daemontools` service scanner, is running
 5. Download the `helloworld` build artifact from the (simulated, Jenkins-like) build server into `/opt/otto/build/helloworld/helloworld-master-checkin@1` (`examples/helloworld/modules/otto_java_app_from_jenkins/manifests/init.pp`)
 6. Deploy the `helloworld` configuration files into `/opt/otto/conf/helloworld` (`examples/helloworld/files/conf`)
@@ -35,9 +35,9 @@ To deploy `helloworld` on Ubuntu 12.04 LTS, run:
 
 Try a few experiments to understand Otto:
 
-* Run `svstat /etc/service/helloworld` to show the application's PID and uptime
+* Run `[svstat](http://cr.yp.to/daemontools/svstat.html) /etc/service/helloworld` to show the application's PID and uptime
 * Run `pstree -paul` to show the process hierarchy; observe that `java` is running as the unprivileged `helloworld` user
-* Run `svc -t /etc/service/helloworld` to send `SIGTERM` to the application; it will automatically restart
+* Run `[svc](http://cr.yp.to/daemontools/svc.html) -t /etc/service/helloworld` to send `SIGTERM` to the application; it will automatically restart
 * Restart the machine; `helloworld` will automatically start
 * View the application logs in `/opt/otto/data/helloworld/log`. Observe the logged configuration values and environment variables.
 * Examine `/opt/otto/service/helloworld/run` and `/opt/otto/run/helloworld` to understand how Otto invokes `helloworld`. Note that the logging configuration in `/opt/otto/conf/helloworld/logback.xml` uses an environment variable supplied by Otto to locate the application data directory without hard-coding path names.
