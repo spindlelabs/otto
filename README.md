@@ -28,7 +28,7 @@ To deploy `helloworld` on Ubuntu 12.04 LTS, run:
     git clone https://github.com/spindlelabs/otto.git
     cd otto
 
-    # This command will make (reversible) changes to your system state; consider using a virtual machine
+    # This command will make changes to your system state as described above; consider using a virtual machine
     sudo puppet apply --modulepath modules:examples/helloworld/modules --debug examples/helloworld/manifests/site.pp
 
 `helloworld` will be installed into `/opt/otto` and started automatically.
