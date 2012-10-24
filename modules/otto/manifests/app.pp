@@ -39,6 +39,7 @@ define otto::app($appName = $title, $appBuildID, $appUserGroupName, $appBuildArt
   # deploy a new build.
   exec { $appBuildArtifactFetchCommand:
     cwd => $appCurrentBuildPath,
+    path => "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
     creates => $appCurrentBuildArtifactPath,
     require => File[$appCurrentBuildPath],
     notify => Service[$appName]
@@ -121,12 +122,12 @@ define otto::app($appName = $title, $appBuildID, $appUserGroupName, $appBuildArt
 
   # Changing the target of a symlink is not an atomic operation; see
   # http://blog.moertel.com/articles/2005/08/22/how-to-change-symlinks-atomically
-  $installServiceCommand = sprintf("/bin/ln -sTf %s %s && mv -Tf %s %s",
+  $installServiceCommand = sprintf("ln -sTf %s %s && mv -Tf %s %s",
                                shellquote($appServicePath),
                                shellquote($appInstalledServiceTempPath),
                                shellquote($appInstalledServiceTempPath),
                                shellquote($appInstalledServicePath))
-  $serviceNotInstalledCommand = sprintf("/usr/bin/test ! \\( -h %s -a \"`readlink -n %s`\" = %s \\)",
+  $serviceNotInstalledCommand = sprintf("test ! \\( -h %s -a \"`readlink -n %s`\" = %s \\)",
                                         shellquote($appInstalledServicePath),
                                         shellquote($appInstalledServicePath),
                                         shellquote($appServicePath))
@@ -134,6 +135,7 @@ define otto::app($appName = $title, $appBuildID, $appUserGroupName, $appBuildArt
 
   exec { $installServiceCommand:
     require => File[$appServiceRunPath],
+    path => "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
     onlyif => $serviceNotInstalledCommand,
     notify => Service[$appName]
   }
