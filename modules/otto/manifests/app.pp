@@ -1,4 +1,4 @@
-define otto::app($appName = $title, $appBuildID, $appUserGroupName, $appBuildArtifactFetchCommand, $appBuildArtifactName, $appConfSource, $appRunContent, $appPrerunContent = "") {
+define otto::app($appName = $title, $appBuildID, $appUserName, $appBuildArtifactFetchCommand, $appBuildArtifactName, $appConfSource, $appRunContent, $appPrerunContent = "") {
   include otto
 
   $appBuildPath = "${otto::ottoBuildPath}/${appName}"
@@ -6,7 +6,6 @@ define otto::app($appName = $title, $appBuildID, $appUserGroupName, $appBuildArt
   $appRunPath = "${otto::ottoRunPath}/${appName}"
   $appDataPath = "${otto::ottoDataPath}/${appName}"
   $appServicePath = "${otto::ottoServicePath}/${appName}"
-  $appLockPath = "${otto::ottoLockPath}/${appName}"
 
   $appCurrentBuildPath = "${appBuildPath}/${appBuildID}"
   $appCurrentBuildArtifactPath = "${appCurrentBuildPath}/${appBuildArtifactName}"
@@ -19,7 +18,7 @@ define otto::app($appName = $title, $appBuildID, $appUserGroupName, $appBuildArt
   file { $appBuildPath:
     ensure => "directory",
     owner => "root",
-    group => $appUserGroupName,
+    group => $appUserName,
     mode => "0640",
     require => File[$otto::ottoBuildPath],
     notify => Service[$appName]
@@ -28,18 +27,22 @@ define otto::app($appName = $title, $appBuildID, $appUserGroupName, $appBuildArt
   file { $appCurrentBuildPath:
     ensure => "directory",
     owner => "root",
-    group => $appUserGroupName,
+    group => $appUserName,
     mode => "0640",
     require => File[$appBuildPath],
     notify => Service[$appName]
   }
 
+
+  # Multiple applications could have the same appBuildArtifactFetchCommand
+  $appBuildArtifactFetchCommandResource = "${appName} ${appBuildArtifactFetchCommand}"
+
   # Application note: $appBuildArtifactFetchCommand must atomically create $appCurrentBuildArtifactPath with
   # correct permissions, and $appCurrentBuildArtifactPath must never be modified. To change the build artifact,
   # deploy a new build.
-  exec { $appBuildArtifactFetchCommand:
+  exec { $appBuildArtifactFetchCommandResource:
+    command => $appBuildArtifactFetchCommand,
     cwd => $appCurrentBuildPath,
-    path => "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
     creates => $appCurrentBuildArtifactPath,
     require => File[$appCurrentBuildPath],
     notify => Service[$appName]
@@ -48,7 +51,7 @@ define otto::app($appName = $title, $appBuildID, $appUserGroupName, $appBuildArt
   file { $appDataPath:
     ensure => "directory",
     owner => "root",
-    group => $appUserGroupName,
+    group => $appUserName,
     mode => "0660",
     require => File[$otto::ottoDataPath],
     notify => Service[$appName]
@@ -63,7 +66,7 @@ define otto::app($appName = $title, $appBuildID, $appUserGroupName, $appBuildArt
   file { $appConfPath:
     ensure => "directory",
     owner => "root",
-    group => $appUserGroupName,
+    group => $appUserName,
     links => "follow",
     recurse => "true",
     purge => true,
@@ -72,7 +75,7 @@ define otto::app($appName = $title, $appBuildID, $appUserGroupName, $appBuildArt
     # make everything executable in case the app has other scripts to run
     mode => "0750",
     # make sure all of the other app dependencies are in place before modifying configuration
-    require => [File[$otto::ottoConfPath, $appDataPath], Exec[$appBuildArtifactFetchCommand]],
+    require => [File[$otto::ottoConfPath, $appDataPath], Exec[$appBuildArtifactFetchCommandResource]],
     notify => Service[$appName]
   }
 
@@ -82,7 +85,7 @@ define otto::app($appName = $title, $appBuildID, $appUserGroupName, $appBuildArt
   file { $appRunPath:
     ensure => "present",
     owner => "root",
-    group => $appUserGroupName,
+    group => $appUserName,
     content => $appRunContent,
     links => "follow",
     mode => "0750",
@@ -95,7 +98,7 @@ define otto::app($appName = $title, $appBuildID, $appUserGroupName, $appBuildArt
   file { $appServicePath:
     ensure => "directory",
     owner => "root",
-    group => $appUserGroupName,
+    group => $appUserName,
     mode => "0640",
     require => File[$otto::ottoServicePath],
     notify => Service[$appName]
@@ -103,15 +106,14 @@ define otto::app($appName = $title, $appBuildID, $appUserGroupName, $appBuildArt
 
   file { $appServiceRunPath:
     ensure => "file",
-    content => sprintf("#!/bin/sh\nexec 2>&1\n%s\nOTTO_APP_NAME=%s OTTO_APP_BUILD_ID=%s OTTO_APP_CURRENT_BUILD_ARTIFACT_PATH=%s OTTO_APP_CONF_PATH=%s OTTO_APP_DATA_PATH=%s exec setlock %s setuidgid %s %s\n",
+    content => sprintf("#!/bin/sh\nexec 2>&1\n%s\nOTTO_APP_NAME=%s OTTO_APP_BUILD_ID=%s OTTO_APP_CURRENT_BUILD_ARTIFACT_PATH=%s OTTO_APP_CONF_PATH=%s OTTO_APP_DATA_PATH=%s exec setuidgid %s %s\n",
                        $appPrerunContent,
                        shellquote($appName),
                        shellquote($appBuildID),
                        shellquote($appCurrentBuildArtifactPath),
                        shellquote($appConfPath),
                        shellquote($appDataPath),
-                       shellquote($appLockPath),
-                       shellquote($appUserGroupName),
+                       shellquote($appUserName),
                        shellquote($appRunPath)),
     owner => "root",
     group => "root",
@@ -135,7 +137,6 @@ define otto::app($appName = $title, $appBuildID, $appUserGroupName, $appBuildArt
 
   exec { $installServiceCommand:
     require => File[$appServiceRunPath],
-    path => "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
     onlyif => $serviceNotInstalledCommand,
     notify => Service[$appName]
   }

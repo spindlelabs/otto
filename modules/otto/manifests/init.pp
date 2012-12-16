@@ -6,7 +6,6 @@ class otto() {
   $ottoRunPath = "${ottoRootPath}/run"
   $ottoDataPath = "${ottoRootPath}/data"
   $ottoServicePath = "${ottoRootPath}/service"
-  $ottoLockPath = "${ottoRootPath}/lock"
 
   $daemontoolsServicePath = "/etc/service"
 
@@ -38,8 +37,7 @@ class otto() {
           $ottoConfPath,
           $ottoRunPath,
           $ottoDataPath,
-          $ottoServicePath,
-          $ottoLockPath]:
+          $ottoServicePath]:
     ensure => "directory",
     owner => "root",
     group => "root",
