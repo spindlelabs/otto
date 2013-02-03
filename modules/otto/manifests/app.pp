@@ -1,4 +1,4 @@
-define otto::app($appName = $title, $appBuildID, $appUserName, $appBuildArtifactFetchCommand, $appBuildArtifactName, $appConfSource, $appRunContent, $appPrerunContent = "") {
+define otto::app($appName = $title, $appBuildID, $appUserName, $appBuildArtifactFetchCommand, $appBuildArtifactName, $appConfSource, $appRunContent, $appPrerunContent = "", $appRunService = true) {
   include otto
 
   $appBuildPath = "${otto::ottoBuildPath}/${appName}"
@@ -32,7 +32,6 @@ define otto::app($appName = $title, $appBuildID, $appUserName, $appBuildArtifact
     require => File[$appBuildPath],
     notify => Service[$appName]
   }
-
 
   # Multiple applications could have the same appBuildArtifactFetchCommand
   $appBuildArtifactFetchCommandResource = "${appName} ${appBuildArtifactFetchCommand}"
@@ -134,7 +133,6 @@ define otto::app($appName = $title, $appBuildID, $appUserName, $appBuildArtifact
                                         shellquote($appInstalledServicePath),
                                         shellquote($appServicePath))
 
-
   exec { $installServiceCommand:
     require => File[$appServiceRunPath],
     onlyif => $serviceNotInstalledCommand,
@@ -143,7 +141,7 @@ define otto::app($appName = $title, $appBuildID, $appUserName, $appBuildArtifact
 
   # We can't use the daemontools provider in 2.6.4 because we need to control the daemon path
   service { $appName:
-    ensure => "running",
+    ensure => $appRunService,
     provider => "base",
     hasrestart => true,
     start => sprintf("svc -u %s", shellquote($appInstalledServicePath)),
