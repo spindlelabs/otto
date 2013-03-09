@@ -1,7 +1,7 @@
 Otto
 ====
 
-Text goes here...link to blog post with introduction. It's easiest to understand Otto by trying it out...
+*This is a preview; we'll have a blog post with a proper introduction before the first release. For now, it's easiest to understand Otto by [watching a presentation](https://spindle.com/talks) and then trying it out...*
 
 Otto is tested with Puppet 2.7.19 on Ubuntu 12.04 LTS.
 
