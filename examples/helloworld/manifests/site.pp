@@ -8,3 +8,7 @@ node default {
     value2 => "from machine manifest"
   }
 }
+
+Exec {
+  path => "/usr/bin:/bin:/usr/sbin:/sbin"
+}
