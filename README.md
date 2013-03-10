@@ -33,7 +33,7 @@ To deploy `helloworld` on Ubuntu 12.04 LTS, run:
 
 `helloworld` will be installed into `/opt/otto` and started automatically.
 
-Try a few experiments to understand Otto:
+Try a few experiments (as `root`) to understand Otto:
 
 * Run [`svstat /etc/service/helloworld`](http://cr.yp.to/daemontools/svstat.html) to show the application's PID and uptime
 * Run `pstree -paul` to show the process hierarchy; observe that `java` is running as the unprivileged `helloworld` user
