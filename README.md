@@ -40,7 +40,7 @@ Try a few experiments (as `root`) to understand Otto:
 * Run [`svc -t /etc/service/helloworld`](http://cr.yp.to/daemontools/svc.html) to send `SIGTERM` to the application; it will automatically restart
 * Restart the machine; `helloworld` will automatically start
 * View the application logs in `/opt/otto/data/helloworld/log`. Observe the logged configuration values and environment variables.
-* Examine `/opt/otto/service/helloworld/run` and `/opt/otto/run/helloworld` to understand how Otto invokes `helloworld`. Note that the logging configuration in `/opt/otto/conf/helloworld/logback.xml` uses an environment variable supplied by Otto to locate the application data directory without hard-coding path names.
+* Examine `/opt/otto/service/helloworld/run` and `/opt/otto/run/helloworld` to understand how Otto invokes `helloworld`. Note that the logging configuration in `/opt/otto/conf/helloworld/logback.xml` uses an environment variable supplied by Otto to locate the application data directory without hard-coding paths.
 * Note the permissions for `/opt/otto/build/helloworld/helloworld-master-checkin@1`, `/opt/otto/conf/helloworld`, and `/opt/otto/data/helloworld`: an application can modify its data directory but cannot modify its build artifact or its configuration
 
 Next, try changing the application configuration. After making each change below, rerun the `puppet apply` command above; Otto will restart the application with its new configuration.
