@@ -24,7 +24,7 @@ To deploy `helloworld`, Otto will:
 
 To deploy `helloworld` on Ubuntu 12.04 LTS, run:
 
-    sudo apt-get install puppet
+    sudo apt-get install git puppet
     git clone https://github.com/spindlelabs/otto.git
     cd otto
 
