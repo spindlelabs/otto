@@ -60,6 +60,6 @@ Now that you've seen a working example, try deploying your own application with 
 Known issues
 ------------
 
-* An application will run on first installation even if `appRunService` to `false`; this is a bug.
+* An application will run on first installation even if `appRunService` is set to `false`; this is a bug.
 
 * Otto does not provide a mechanism for removing deployed applications, but it's easy to do manually: remove the application definition from the node manifest, [stop the application and its `supervise` process](http://cr.yp.to/daemontools/faq/create.html#remove), and then remove its state from `/opt/otto`.
