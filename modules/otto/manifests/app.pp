@@ -11,6 +11,7 @@ define otto::app($appName = $title, $appBuildID, $appUserName, $appBuildArtifact
   $appCurrentBuildArtifactPath = "${appCurrentBuildPath}/${appBuildArtifactName}"
 
   $appServiceRunPath = "${appServicePath}/run"
+  $appServiceDownPath = "${appServicePath}/down"
 
   $appInstalledServicePath = "${otto::daemontoolsServicePath}/${appName}"
   $appInstalledServiceTempPath = "${otto::daemontoolsServicePath}-temp-${appName}"
@@ -56,12 +57,12 @@ define otto::app($appName = $title, $appBuildID, $appUserName, $appBuildArtifact
     notify => Service[$appName]
   }
 
-  # Application note: Puppet 2.6.4 deploys individual files by writing to a temporary file and then using rename()
+  # Application note: Puppet 2.6.4 deploys individual files by writing to a temporary file and then using rename(2)
   # to atomically move them into place. The service will not be enabled until all initial configuration has been
-  # deployed, but after that the service may restart at any time -- even while configuration files are being changed.
-  # Therefore, it is possible that an application may start with a mix of old and new configuration files. If this
-  # presents a problem, one possible mitigation approach is to treat all configuration files as immutable and then
-  # use "run" to pick the latest complete set.
+  # deployed, but after that the service may restart at any time -- even while configuration files are being
+  # (atomically) replaced. Therefore, it is possible that an application may start with a mix of old and new versions
+  # of configuration files. If this presents a problem, one possible mitigation approach is to treat all configuration
+  # files as immutable and then pick the latest complete set from within your application.
   file { $appConfPath:
     ensure => "directory",
     owner => "root",
@@ -79,7 +80,7 @@ define otto::app($appName = $title, $appBuildID, $appUserName, $appBuildArtifact
   }
 
   # Application note: the "run" script is deployed last since it may have dependencies in $appConfPath and
-  # other directories. Puppet 2.6.4 deploys the new script by rename()ing it into place, which complies with
+  # other directories. Puppet 2.6.4 deploys the new script by rename(2)ing it into place, which complies with
   # the guidance for upgrading a run script at http://cr.yp.to/daemontools/faq/create.html#upgrade
   file { $appRunPath:
     ensure => "present",
@@ -121,13 +122,23 @@ define otto::app($appName = $title, $appBuildID, $appUserName, $appBuildArtifact
     notify => Service[$appName]
   }
 
+  # svscan automatically supervises new services shortly after they're added to the service directory. We might want
+  # to install a service but not bring it up immediately, though. supervise will not run the service if ./down exists
+  # in the service directory, so we'll create ./down before adding the service and then let the service handler bring
+  # the service up later if needed.
+  #
+  # References:
+  #  http://cr.yp.to/daemontools/svscan.html
+  #  http://cr.yp.to/daemontools/supervise.html
+
   # Changing the target of a symlink is not an atomic operation; see
   # http://blog.moertel.com/articles/2005/08/22/how-to-change-symlinks-atomically
-  $installServiceCommand = sprintf("ln -sTf %s %s && mv -Tf %s %s",
-                               shellquote($appServicePath),
-                               shellquote($appInstalledServiceTempPath),
-                               shellquote($appInstalledServiceTempPath),
-                               shellquote($appInstalledServicePath))
+  $installServiceCommand = sprintf("touch %s && ln -sTf %s %s && mv -Tf %s %s",
+                                   shellquote($appServiceDownPath),
+                                   shellquote($appServicePath),
+                                   shellquote($appInstalledServiceTempPath),
+                                   shellquote($appInstalledServiceTempPath),
+                                   shellquote($appInstalledServicePath))
   $serviceNotInstalledCommand = sprintf("test ! \\( -h %s -a \"`readlink -n %s`\" = %s \\)",
                                         shellquote($appInstalledServicePath),
                                         shellquote($appInstalledServicePath),
@@ -144,10 +155,17 @@ define otto::app($appName = $title, $appBuildID, $appUserName, $appBuildArtifact
     ensure => $appRunService,
     provider => "base",
     hasrestart => true,
-    start => sprintf("svc -u %s", shellquote($appInstalledServicePath)),
-    restart => sprintf("svc -t %s", shellquote($appInstalledServicePath)),
-    status => sprintf("svstat %s | grep ': up '", shellquote($appInstalledServicePath)),
-    stop => sprintf("svc -d %s", shellquote($appInstalledServicePath)),
+    # Since we want the service to come up, it's appropriate to remove the ./down file. ("rm -f s" succeeds even
+    # if s does not exist.)
+    start => sprintf("rm -f %s && svc -u %s",
+                     shellquote($appServiceDownPath),
+                     shellquote($appInstalledServicePath)),
+    restart => sprintf("svc -t %s",
+                       shellquote($appInstalledServicePath)),
+    status => sprintf("svstat %s | grep ': up '",
+                      shellquote($appInstalledServicePath)),
+    stop => sprintf("svc -d %s",
+                    shellquote($appInstalledServicePath)),
     require => Exec[$installServiceCommand]
   }
 }
