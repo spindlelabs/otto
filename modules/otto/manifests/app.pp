@@ -125,7 +125,8 @@ define otto::app($appName = $title, $appBuildID, $appUserName, $appBuildArtifact
   # svscan automatically supervises new services shortly after they're added to the service directory. We might want
   # to install a service but not bring it up immediately, though. supervise will not run the service if ./down exists
   # in the service directory, so we'll create ./down before adding the service and then let the service handler bring
-  # the service up later if needed.
+  # the service up later if needed. Also, if we are bringing the service down, we will create ./down so that supervise
+  # does not restart it if the machine is rebooted.
   #
   # References:
   #  http://cr.yp.to/daemontools/svscan.html
@@ -164,7 +165,8 @@ define otto::app($appName = $title, $appBuildID, $appUserName, $appBuildArtifact
                        shellquote($appInstalledServicePath)),
     status => sprintf("svstat %s | grep ': up '",
                       shellquote($appInstalledServicePath)),
-    stop => sprintf("svc -d %s",
+    stop => sprintf("touch %s && svc -d %s",
+                    shellquote($appServiceDownPath),
                     shellquote($appInstalledServicePath)),
     require => Exec[$installServiceCommand]
   }
