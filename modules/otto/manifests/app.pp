@@ -131,11 +131,20 @@ define otto::app($appName = $title, $appBuildID, $appUserName, $appBuildArtifact
   # References:
   #  http://cr.yp.to/daemontools/svscan.html
   #  http://cr.yp.to/daemontools/supervise.html
+  file { $appServiceDownPath:
+    ensure => $appRunService ? {
+                true => "absent",
+                false => "present"
+              },
+    owner => "root",
+    group => "root",
+    mode => "0600",
+    require => File[$appServiceRunPath]
+  }
 
   # Changing the target of a symlink is not an atomic operation; see
   # http://blog.moertel.com/articles/2005/08/22/how-to-change-symlinks-atomically
-  $installServiceCommand = sprintf("touch %s && ln -sTf %s %s && mv -Tf %s %s",
-                                   shellquote($appServiceDownPath),
+  $installServiceCommand = sprintf("ln -sTf %s %s && mv -Tf %s %s",
                                    shellquote($appServicePath),
                                    shellquote($appInstalledServiceTempPath),
                                    shellquote($appInstalledServiceTempPath),
@@ -146,7 +155,7 @@ define otto::app($appName = $title, $appBuildID, $appUserName, $appBuildArtifact
                                         shellquote($appServicePath))
 
   exec { $installServiceCommand:
-    require => File[$appServiceRunPath],
+    require => File[$appServiceDownPath],
     onlyif => $serviceNotInstalledCommand,
     notify => Service[$appName]
   }
@@ -156,17 +165,13 @@ define otto::app($appName = $title, $appBuildID, $appUserName, $appBuildArtifact
     ensure => $appRunService,
     provider => "base",
     hasrestart => true,
-    # Since we want the service to come up, it's appropriate to remove the ./down file. ("rm -f s" succeeds even
-    # if s does not exist.)
-    start => sprintf("rm -f %s && svc -u %s",
-                     shellquote($appServiceDownPath),
+    start => sprintf("svc -u %s",
                      shellquote($appInstalledServicePath)),
     restart => sprintf("svc -t %s",
                        shellquote($appInstalledServicePath)),
     status => sprintf("svstat %s | grep ': up '",
                       shellquote($appInstalledServicePath)),
-    stop => sprintf("touch %s && svc -d %s",
-                    shellquote($appServiceDownPath),
+    stop => sprintf("svc -d %s",
                     shellquote($appInstalledServicePath)),
     require => Exec[$installServiceCommand]
   }
