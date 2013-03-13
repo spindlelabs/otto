@@ -5,7 +5,8 @@ node default {
   class { "helloworld":
     jenkinsProjectName => "helloworld-master-checkin",
     jenkinsBuildID => "1",
-    value2 => "from machine manifest"
+    value2 => "from machine manifest",
+    appRunService => true
   }
 }
 

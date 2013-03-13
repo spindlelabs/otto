@@ -1,4 +1,4 @@
-class helloworld($jenkinsProjectName, $jenkinsBuildID, $value2) {
+class helloworld($jenkinsProjectName, $jenkinsBuildID, $value2, $appRunService = true) {
   user { "helloworld":
     ensure => "present",
     uid => "4000",
@@ -14,6 +14,7 @@ class helloworld($jenkinsProjectName, $jenkinsBuildID, $value2) {
     appUserName => "helloworld",
     appRunContent => template("helloworld/run.erb"),
     appConfSource => "puppet:///modules/helloworld/conf",
+    appRunService => $appRunService,
     require => User["helloworld"]
   }
 }

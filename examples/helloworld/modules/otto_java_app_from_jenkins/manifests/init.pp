@@ -1,4 +1,4 @@
-define otto_java_app_from_jenkins($appName = $title, $jenkinsProjectName, $jenkinsBuildID, $appUserName, $appConfSource, $appRunContent) {
+define otto_java_app_from_jenkins($appName = $title, $jenkinsProjectName, $jenkinsBuildID, $appUserName, $appConfSource, $appRunContent, $appRunService = true) {
   include java
 
   $appBuildID = "${jenkinsProjectName}@${jenkinsBuildID}"
@@ -22,6 +22,7 @@ define otto_java_app_from_jenkins($appName = $title, $jenkinsProjectName, $jenki
     appBuildArtifactName => $appBuildArtifactName,
     appConfSource => $appConfSource,
     appRunContent => $appRunContent,
+    appRunService => $appRunService,
     require => [Class["java"], User[$appUserName]]
   }
 }
