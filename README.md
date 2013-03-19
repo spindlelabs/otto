@@ -8,7 +8,7 @@ Otto is tested with Puppet 2.7.19 on Ubuntu 12.04 LTS.
 Getting started: deploying `helloworld`
 ---------------------------------------
 
-`helloworld` is a simple Java application that reads its configuration, logs several messages, and then exits after 30 seconds (simulating an application crash.) We'll demonstrate deploying `helloworld` from a build server using Otto.
+`helloworld` is a simple Java application that reads its configuration, logs several messages, and then exits after 30 seconds (simulating an application crash.) We'll demonstrate deploying `helloworld` from a build server using Otto. (Otto is agnostic to how your artifact lands on the machine; you could use [BitTorrent](http://arstechnica.com/business/2012/04/exclusive-a-behind-the-scenes-look-at-facebook-release-engineering/), for example.)
 
 To deploy `helloworld`, Otto will:
 
