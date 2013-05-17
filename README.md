@@ -1,7 +1,7 @@
 Otto
 ====
 
-*This is a preview; we'll have a blog post with a proper introduction before the first release. For now, it's easiest to understand Otto by [watching a presentation](https://spindle.com/talks) and then trying it out...*
+*For an introduction to Otto, read our blog post: [Otto: unifying deployment, application management, and platform management](http://blog.spindle.com/post/50658200302/hello-otto)*
 
 Otto is tested with Puppet 2.7.19 on Ubuntu 12.04 LTS.
 
