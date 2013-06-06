@@ -4,7 +4,7 @@ define otto_java_app_from_jenkins($appName = $title, $jenkinsProjectName, $jenki
   $appBuildID = "${jenkinsProjectName}@${jenkinsBuildID}"
   $appBuildArtifactName = "${appName}-assembly-1.0.jar"
   $appBuildArtifactTempName = "${appBuildArtifactName}.tmp"
-  $appBuildArtifactUrl = "https://spindle-app-dev-otto-examples.s3-us-west-2.amazonaws.com/job/${jenkinsProjectName}/${jenkinsBuildID}/artifact/${appName}/target/${appBuildArtifactName}"
+  $appBuildArtifactUrl = "https://spindle-infra-prod-otto-examples.s3-us-west-2.amazonaws.com/job/${jenkinsProjectName}/${jenkinsBuildID}/artifact/${appName}/target/${appBuildArtifactName}"
 
   otto::app { $appName:
     appBuildID => $appBuildID,
